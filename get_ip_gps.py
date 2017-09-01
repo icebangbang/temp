@@ -5,10 +5,9 @@ import re;
 import datetime;
 from math import *
 
-# path = '/Users/pailie/Desktop/nakedLogs/mock_ip.log'
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
-# dir_path = '/Users/pailie/Desktop/nakedLogs/'
 dir_path = 'static/example/'
+# dir_path = '/Users/pailie/Desktop/nakedLogs/'
 
 
 def search_for_same_ip(time, ip, limit_hour, count):
