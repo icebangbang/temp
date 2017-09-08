@@ -7,6 +7,7 @@ import os
 import re
 import time
 import get_ip_gps
+from conf.logger import logging
 
 app = Flask(__name__, static_folder="static")
 
@@ -20,6 +21,7 @@ def search_by_mobile(mobile):
     time_str = now.strftime('%Y%m%d%H')
     file_path = prefix + time_str + ".log"
     details = open_file(file_path, now, mobile, 1)
+    logging.info("the detail is: %s",details)
     if details is None:
         return rest.response_to({'ip_count': 0, 'user_count': 0})
     ip_count = get_ip_gps.search_for_same_ip(details[0], details[1], 24, 0)
@@ -29,6 +31,7 @@ def search_by_mobile(mobile):
 
 
 def open_file(file_path, date_time, mobile, depth):
+    logging.info('currrnt log file path is: ' + file_path + 'search mobile is: ' + mobile)
     if depth == 49:
         return None
     if_find = False
@@ -39,6 +42,7 @@ def open_file(file_path, date_time, mobile, depth):
                     guid = re.findall(pattern, line, re.M)
                     if len(guid) > 0:
                         datas = guid[0].split(':')
+                        logging.info("the key data is: %s", datas)
                         phone_number = datas[0]
                         if mobile == phone_number:
                             if_find = True

@@ -4,6 +4,7 @@ import os;
 import re;
 import datetime;
 from math import *
+from conf.logger import logging
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
 # dir_path = 'static/example/'
@@ -23,8 +24,9 @@ def search_for_same_ip(time, ip, limit_hour, count):
         f = open(filename, 'r')
         s = f.readlines()
         for line in s:
-            if line.find(ip) >= 0:
-                count += 1
+            if line.find('>>> api.bid.BidController.apply from') > 0:
+                if line.find(ip) >= 0:
+                    count += 1
         f.close()
         limit_hour -= 1
         time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
@@ -96,3 +98,5 @@ print ip_count
 # print get_distance_by_lat_lng(120.024117, 30.286472, 120.035301, 30.285599)
 gps_count = search_for_similar_gps('2017-08-31 14:18:12', float('0.01'), float('0.0'), 24, 0)
 print gps_count
+
+logging.debug("hello,%s", [1, 2, 3, 4])
