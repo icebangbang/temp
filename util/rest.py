@@ -36,3 +36,7 @@ def response_to(data=None, message=None, success=True, cls=None, **kwargs):
     resp.headers[
         "Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept, Connection, User-Agent, Cookie,Cache-Control"
     return resp
+
+
+a = 'i like ,it,just'
+print a.find('it2')
