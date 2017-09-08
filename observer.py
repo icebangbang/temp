@@ -11,7 +11,7 @@ import get_ip_gps
 app = Flask(__name__, static_folder="static")
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
-prefix = '/Users/lifeng/Work/Python/observer/static/example/'
+prefix = '/home/logstash/naked/'
 
 
 @app.route('/search/<string:mobile>')
