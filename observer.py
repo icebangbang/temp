@@ -31,7 +31,7 @@ def search_by_mobile(mobile):
 
 
 def open_file(file_path, date_time, mobile, depth):
-    logging.info('currrnt log file path is: ' + file_path + 'search mobile is: ' + mobile)
+    logging.info('current log file path is: ' + file_path + 'search mobile is: ' + mobile)
     if depth == 49:
         return None
     if_find = False

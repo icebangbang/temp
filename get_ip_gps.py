@@ -32,6 +32,7 @@ def search_for_same_ip(time, ip, limit_hour, count):
         time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
         return search_for_same_ip(time, ip, limit_hour, count)
     except:
+        logging.debug("File" + filename + " not found")
         return count
 
 
@@ -39,6 +40,8 @@ def search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count):
     if origin_lat == '' or origin_lng == '':
         origin_lat = 0
         origin_lng = 0
+        # missing latitude & longitude
+        return -1
     if limit_hour <= 0:
         return count
 
@@ -61,6 +64,7 @@ def search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count):
         time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
         return search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count)
     except:
+        logging.debug("File" + filename + " not found")
         return count
 
 
