@@ -8,8 +8,8 @@ from conf.logger import logging
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
 # dir_path = 'static/example/'
-dir_path = '/home/logstash/naked/'
-
+# dir_path = '/home/logstash/naked/'
+dir_path = '/Users/pailie/Downloads/naked/'
 
 # dir_path = '/Users/pailie/Desktop/nakedLogs/'
 
@@ -32,7 +32,7 @@ def search_for_same_ip(time, ip, limit_hour, count):
         time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
         return search_for_same_ip(time, ip, limit_hour, count)
     except:
-        logging.debug("File" + filename + " not found")
+        logging.debug("File " + filename + " not found")
         return count
 
 
@@ -64,7 +64,7 @@ def search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count):
         time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
         return search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count)
     except:
-        logging.debug("File" + filename + " not found")
+        logging.debug("File " + filename + " not found")
         return count
 
 

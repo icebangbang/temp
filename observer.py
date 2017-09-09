@@ -12,7 +12,8 @@ from conf.logger import logging
 app = Flask(__name__, static_folder="static")
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
-prefix = '/home/logstash/naked/'
+# prefix = '/home/logstash/naked/'
+prefix = '/Users/pailie/Downloads/naked/'
 
 
 @app.route('/search/<string:mobile>')
@@ -54,8 +55,9 @@ def open_file(file_path, date_time, mobile, depth):
                 depth += 1
                 date_time = date_time + timedelta(hours=-1)
                 file_path = prefix + date_time.strftime('%Y%m%d%H') + '.log'
-                open_file(file_path, date_time, mobile, depth)
+                return open_file(file_path, date_time, mobile, depth)
 
+    logging.debug("File " + file_path + " not found")
 
 # app.run(host='0.0.0.0',port=8091,debug=True,use_reloader=False,threaded=True)
 if __name__ == '__main__':
