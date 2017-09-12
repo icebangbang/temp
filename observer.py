@@ -12,8 +12,8 @@ from conf.logger import logging
 app = Flask(__name__, static_folder="static")
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
-# prefix = '/home/logstash/naked/'
-prefix = '/Users/pailie/Downloads/naked/'
+prefix = '/home/logstash/naked/'
+# prefix = '/Users/pailie/Downloads/naked/'
 
 
 @app.route('/search/<string:mobile>')

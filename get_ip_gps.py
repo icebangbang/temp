@@ -8,9 +8,9 @@ from conf.logger import logging
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
 # dir_path = 'static/example/'
-# dir_path = '/home/logstash/naked/'
+dir_path = '/home/logstash/naked/'
 
-dir_path = '/Users/pailie/Downloads/naked/'
+# dir_path = '/Users/pailie/Downloads/naked/'
 
 
 def search_for_same_ip(time, ip, limit_hour, count):
