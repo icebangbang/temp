@@ -8,9 +8,9 @@ from conf.logger import logging
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
 # dir_path = 'static/example/'
-dir_path = '/home/logstash/naked/'
+# dir_path = '/home/logstash/naked/'
 
-# dir_path = '/Users/pailie/Desktop/nakedLogs/'
+dir_path = '/Users/pailie/Downloads/naked/'
 
 
 def search_for_same_ip(time, ip, limit_hour, count):
@@ -65,6 +65,34 @@ def search_for_similar_gps(time, origin_lat, origin_lng, limit_hour, count):
     except:
         logging.debug("File " + filename + " not found")
         return count
+
+
+def search_ips_for_same_mobile(time, mobile, limit_hour, ip_set):
+    if limit_hour <= 0:
+        return ip_set
+
+    time_str = get_time(time).strftime("%Y%m%d%H")
+    filename = dir_path + time_str + '.log'
+    try:
+        f = open(filename, 'r')
+        s = f.readlines()
+        for line in s:
+            if line.find('>>> api.bid.BidController.apply from') > 0:
+                guid = re.findall(pattern, line, re.M)
+                if len(guid) > 0:
+                    data = guid[0].split(':')
+                    phone_number = data[0]
+                    if mobile == phone_number:
+                        ips = data[3].split(",")
+                        ip_set.add(ips[0])
+        f.close()
+        limit_hour -= 1
+        time = (get_time(time) - datetime.timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+        return search_ips_for_same_mobile(time, mobile, limit_hour, ip_set)
+    except:
+        logging.debug("File " + filename + " not found")
+        return ip_set
+
 
 
 def get_time(str):

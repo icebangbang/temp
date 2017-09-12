@@ -12,7 +12,8 @@ from conf.logger import logging
 app = Flask(__name__, static_folder="static")
 
 pattern = "\[\[(.*?)\]\]"  # 找到pattern中的[[]]内的数据
-prefix = '/home/logstash/naked/'
+# prefix = '/home/logstash/naked/'
+prefix = '/Users/pailie/Downloads/naked/'
 
 
 @app.route('/search/<string:mobile>')
@@ -23,10 +24,12 @@ def search_by_mobile(mobile):
     details = open_file(file_path, now, mobile, 1)
     logging.info("the detail is: %s",details)
     if details is None:
-        return rest.response_to({'ip_count': 0, 'user_count': 0})
+        return rest.response_to({'ip_count': -1, 'user_count': -1})
     ip_count = get_ip_gps.search_for_same_ip(details[0], details[1], 24, 0)
-    user_count = get_ip_gps.search_for_similar_gps(details[0], details[2], details[3], 24, 0)
-    data = {'ip_count': ip_count, 'user_count': user_count}
+    user_count = get_ip_gps.search_for_similar_gps(details[0], details[1], details[3], 24, 0)
+    ip_set = set()
+    ip_set = get_ip_gps.search_ips_for_same_mobile(details[0], mobile, 48, ip_set)
+    data = {'ip_count': ip_count, 'user_count': user_count, 'ip_no': details[1], 'apply_time': details[0], 'ip_set': list(ip_set)}
     return rest.response_to(data)
 
 
