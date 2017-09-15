@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask
+from flask import Flask, request
 from util import rest
 
 from datetime import datetime, timedelta
@@ -7,6 +7,7 @@ import os
 import re
 import time
 import get_ip_gps
+import check_history
 from conf.logger import logging
 
 app = Flask(__name__, static_folder="static")
@@ -16,20 +17,45 @@ prefix = '/home/logstash/naked/'
 # prefix = '/Users/pailie/Downloads/naked/'
 
 
-@app.route('/search/<string:mobile>')
+@app.route('/search/<string:mobile>', methods=['POST'])
 def search_by_mobile(mobile):
+    cid = request.form.get("cid")
+    name = request.form.get("name")
+
+    is_black_check = check_history.check_cid_mobile_in_black(cid, mobile)
+    is_gray_check = check_history.check_cid_mobile_in_gray(cid, mobile)
+    is_reject_check = check_history.check_cid_mobile_in_reject(cid, mobile)
+
+    # default value
+    apply_time = None
+    ip_no = None
+    ip_count = -1
+    user_count = -1
+    ip_set = set()
+
     now = datetime.now()
     time_str = now.strftime('%Y%m%d%H')
     file_path = prefix + time_str + ".log"
     details = open_file(file_path, now, mobile, 1)
     logging.info("the detail is: %s",details)
-    if details is None:
-        return rest.response_to({'ip_count': -1, 'user_count': -1})
-    ip_count = get_ip_gps.search_for_same_ip(details[0], details[1], 24, 0)
-    user_count = get_ip_gps.search_for_similar_gps(details[0], details[1], details[3], 24, 0)
-    ip_set = set()
-    ip_set = get_ip_gps.search_ips_for_same_mobile(details[0], mobile, 48, ip_set)
-    data = {'ip_count': ip_count, 'user_count': user_count, 'ip_no': details[1], 'apply_time': details[0], 'ip_set': list(ip_set)}
+
+    if details is not None:
+        apply_time = details[0]
+        ip_no = details[1]
+        ip_count = get_ip_gps.search_for_same_ip(details[0], details[1], 24, 0)
+        user_count = get_ip_gps.search_for_similar_gps(details[0], details[1], details[3], 24, 0)
+        ip_set = get_ip_gps.search_ips_for_same_mobile(details[0], mobile, 48, ip_set)
+    data = {'ip_count': ip_count,
+            'user_count': user_count,
+            'ip_no': ip_no,
+            'apply_time': apply_time,
+            'ip_set': list(ip_set),
+            'cid_in_black': is_black_check.cid_check,
+            'mobile_in_black': is_black_check.mobile_check,
+            'cid_in_gray': is_gray_check.cid_check,
+            'mobile_in_gray': is_gray_check.mobile_check,
+            'cid_in_reject': is_reject_check.cid_check,
+            'mobile_in_reject': is_reject_check.mobile_check}
     return rest.response_to(data)
 
 
