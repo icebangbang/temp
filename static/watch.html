@@ -34,17 +34,17 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <div class="form-horizontal">
+                <div class="form-horizontal" >
                     <div class="form-group"><label class="col-sm-2 control-label">手机</label>
 
                         <div class="col-sm-2"><input id="mobile" type="text"
-                                                     class="form-control"></div>
+                                                     class="form-control" required></div>
                     </div>
 
                     <div class="form-group"><label class="col-sm-2 control-label">身份证</label>
 
                         <div class="col-sm-2"><input id="cid" type="text"
-                                                     class="form-control"></div>
+                                                     class="form-control" required></div>
                     </div>
 
                     <div class="form-group"><label class="col-sm-2 control-label">姓名</label>
@@ -114,16 +114,6 @@
                                                      class="form-control" readonly></div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">身份证命中拒绝名单</label>
-                        <div class="col-sm-2"><input placeholder="" id="cid_in_reject" type="text"
-                                                     class="form-control" readonly></div>
-
-                        <label class="col-sm-2 control-label">手机号命中拒绝名单</label>
-                        <div class="col-sm-2"><input placeholder="" id="mobile_in_reject" type="text"
-                                                     class="form-control" readonly></div>
-                    </div>
-
                     <div class="hr-line-dashed"></div>
 
                     <div class="form-group">
@@ -154,37 +144,74 @@
 <script>
     $(document).ready(function () {
         $('#ensure').click(function () {
+        $('#cid').attr("required", "required");
 
             var mobile = $('#mobile').val();
             var cid = $('#cid').val();
             var name = $('#name').val();
 
-            $.ajax({
-                url: "../../search/"+mobile,
-                type: 'post',
-                data: {
-                    mobile: mobile,
-                    cid: cid,
-                    name: name
-                },
-                async: true,
-                success: function (result) {
-                    if(result.success) {
-                        $('#apply_time').val(result.data.apply_time);
-                        $('#ip_no').val(result.data.ip_no);
-                        $('#ip_count').val(result.data.ip_count);
-                        $('#ip_set').val(result.data.ip_set);
-                        $('#gps').val(result.data.user_count);
+            if (mobile.length==11 && cid.length==18) {
+                $.ajax({
+                    url: "../../search/"+mobile,
+                    type: 'post',
+                    data: {
+                        mobile: mobile,
+                        cid: cid,
+                        name: name
+                    },
+                    async: true,
+                    success: function (result) {
+                        if(result.success) {
+                            $('#apply_time').val(result.data.apply_time);
+                            $('#ip_no').val(result.data.ip_no);
+                            $('#ip_count').val(result.data.ip_count);
+                            $('#ip_set').val(result.data.ip_set);
+                            $('#gps').val(result.data.user_count);
 
-                        $('#cid_in_black').val(result.data.cid_in_black);
-                        $('#mobile_in_black').val(result.data.mobile_in_black);
-                        $('#cid_in_gray').val(result.data.cid_in_gray);
-                        $('#mobile_in_gray').val(result.data.mobile_in_gray);
-                        $('#cid_in_reject').val(result.data.cid_in_reject);
-                        $('#mobile_in_reject').val(result.data.mobile_in_reject);
+                            $('#cid_in_black').val(result.data.cid_in_black);
+                            if (result.data.cid_in_black===true) {
+                                $('#cid_in_black').css("color", "red");
+                            } else {
+                                $('#cid_in_black').css("color", "#676a6c");
+                            }
+
+                            $('#mobile_in_black').val(result.data.mobile_in_black);
+                            if (result.data.mobile_in_black===true) {
+                                $('#mobile_in_black').css("color", "red");
+                            } else {
+                                $('#mobile_in_black').css("color", "#676a6c");
+                            }
+
+                            $('#cid_in_gray').val(result.data.cid_in_gray);
+                            if (result.data.cid_in_gray===true) {
+                                $('#cid_in_gray').css("color", "red");
+                            } else {
+                                $('#cid_in_gray').css("color", "#676a6c");
+                            }
+
+                            $('#mobile_in_gray').val(result.data.mobile_in_gray);
+                            if (result.data.mobile_in_gray===true) {
+                                $('#mobile_in_gray').css("color", "red");
+                            } else {
+                                $('#mobile_in_gray').css("color", "#676a6c");
+                            }
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                alert("please enter correct phone number and cid.")
+
+                $('#apply_time').val("");
+                $('#ip_no').val("");
+                $('#ip_count').val(-1);
+                $('#ip_set').val("");
+                $('#gps').val(-1);
+
+                $('#cid_in_black').val(false);
+                $('#mobile_in_black').val(false);
+                $('#cid_in_gray').val(false);
+                $('#mobile_in_gray').val(false);
+            }
         });
     });
 </script>

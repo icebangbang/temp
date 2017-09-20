@@ -22,16 +22,19 @@ def search_by_mobile(mobile):
     cid = request.form.get("cid")
     name = request.form.get("name")
 
-    is_black_check = check_history.check_cid_mobile_in_black(cid, mobile)
-    is_gray_check = check_history.check_cid_mobile_in_gray(cid, mobile)
-    is_reject_check = check_history.check_cid_mobile_in_reject(cid, mobile)
-
     # default value
     apply_time = None
     ip_no = None
     ip_count = -1
     user_count = -1
     ip_set = set()
+    is_black_check = check_history.CheckRes()
+    is_gray_check = check_history.CheckRes()
+
+    if cid is not None and len(cid)>0 and len(mobile)>0:
+        is_black_check = check_history.check_cid_mobile_in_black(cid, mobile)
+        is_gray_check = check_history.check_cid_mobile_in_gray(cid, mobile)
+
 
     now = datetime.now()
     time_str = now.strftime('%Y%m%d%H')
@@ -53,9 +56,8 @@ def search_by_mobile(mobile):
             'cid_in_black': is_black_check.cid_check,
             'mobile_in_black': is_black_check.mobile_check,
             'cid_in_gray': is_gray_check.cid_check,
-            'mobile_in_gray': is_gray_check.mobile_check,
-            'cid_in_reject': is_reject_check.cid_check,
-            'mobile_in_reject': is_reject_check.mobile_check}
+            'mobile_in_gray': is_gray_check.mobile_check
+            }
     return rest.response_to(data)
 
 
